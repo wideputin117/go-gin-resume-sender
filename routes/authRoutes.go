@@ -10,6 +10,7 @@ func AuthRoutes(c *gin.Engine) {
 	auth := c.Group("/api/v1/auth")
 	{
 		auth.POST("/signup", controllers.RegisterUser)
+		auth.POST("/login",controllers.LoginUser)
 
-	}
-}
+ 	}
+ }
