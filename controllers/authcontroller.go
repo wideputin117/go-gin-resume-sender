@@ -104,9 +104,9 @@ func LoginUser (c *gin.Context){
 	}
     
 	t= jwt.NewWithClaims(jwt.SigningMethodHS256,jwt.MapClaims{
-		    "iss": "my-auth-server", 
-			"sub": "john", 
-			"foo": 2,
+		    "id": user.ID, 
+			"name": user.Name, 
+			"email": user.Email,
 	})
     s,err =t.SignedString(key)
     if err != nil {
@@ -130,7 +130,7 @@ func UserData (c *gin.Context){
 	if err != nil {
 		log.Fatal("❌ Unable to load environment variables")
 	}
-//    var user models.User
+   var user models.User
     cookie, err := c.Cookie("access_token")
     if err != nil {
         c.String(http.StatusNotFound, "Cookie not found")
@@ -174,14 +174,14 @@ func UserData (c *gin.Context){
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	var user models.User
+	// var user models.User
 	err = userCollection.FindOne(ctx, bson.M{"_id": userID}).Decode(&user)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	// Remove sensitive fields
+	// // Remove sensitive fields
 	user.Password = ""
 
 	// Return user data
