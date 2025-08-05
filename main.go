@@ -39,5 +39,7 @@ func main() {
 	})
 	router.GET("/albums", getAlbums)
 	routes.AuthRoutes(router)
+	routes.CategoryRoutes(router)
+	routes.ProductRoutes(router)
 	router.Run("localhost:8000")
 }
