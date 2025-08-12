@@ -11,5 +11,6 @@ func ProductRoutes(c *gin.Engine){
 	{
 		product.POST("/create", controllers.CreatedProduct)
 		product.GET("/",controllers.GetProducts)
+		product.GET("/:productId", controllers.GetSingleProduct)
 	}
 }

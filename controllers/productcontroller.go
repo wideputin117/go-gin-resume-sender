@@ -4,6 +4,7 @@ import (
 	"context"
 	"example/go-gin-resume-sender/config"
 	"example/go-gin-resume-sender/models"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -38,45 +39,14 @@ func CreatedProduct(c *gin.Context) {
    })
 }
 
-// func GetProducts(c *gin.Context){
-// 	// var products models.Product
-//     productCollection := config.Client.Database("Gin").Collection("product")
-
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
-
-// 	cursor, err := productCollection.Find(ctx, bson.M{})
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch products"})
-// 		return
-// 	}
-// 	defer cursor.Close(ctx)
-
-// 	var products []models.Product
-// 	if err = cursor.All(ctx, &products); err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode products"})
-// 		return
-// 	}
-// 	 if len(products) == 0 {
-// 		c.JSON(http.StatusNotFound, gin.H{"error": "No products found"})
-// 		return
-// 	}
-
-//  	c.JSON(http.StatusOK, gin.H{
-// 		"message":  "Products fetched successfully",
-// 		"products": products,
-// 	})
-// }
-
-
 func GetProducts(c *gin.Context) {
 	productCollection := config.Client.Database("Gin").Collection("product")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// MongoDB aggregation pipeline with $lookup
-	pipeline := mongo.Pipeline{
+	// preparing the pipeline for performing the aggregation
+ 	pipeline := mongo.Pipeline{
 		{
 			{"$lookup", bson.D{
 				{Key: "from", Value: "category"},
@@ -88,7 +58,7 @@ func GetProducts(c *gin.Context) {
 		{
 			{"$unwind", bson.D{
 				{"path", "$categoryInfo"},
-				{"preserveNullAndEmptyArrays", true}, // Keep products without category
+				{"preserveNullAndEmptyArrays", true},  
 			}},
 		},
 	}
@@ -116,3 +86,25 @@ func GetProducts(c *gin.Context) {
 		"products": products,
 	})
 }
+
+func GetSingleProduct(c *gin.Context){
+	id := c.Param("productId")
+	fmt.Println("the id is", id)
+    var product models.Product
+	if id == ""{
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Inavlid Product Id"})
+		return
+	}
+	objId, err:= primitive.ObjectIDFromHex(id)
+	productCollection :=config.Client.Database("Gin").Collection("product")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = productCollection.FindOne(ctx,bson.M{"_id":objId}).Decode(&product)
+
+	if err != nil{
+		c.JSON(http.StatusNotFound,gin.H{"message":"No product is found"})
+	    return
+	}
+	c.JSON(http.StatusFound, gin.H{"message": "Product is Found", "data": product})
+} 
