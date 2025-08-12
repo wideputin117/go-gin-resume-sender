@@ -10,5 +10,6 @@ func ProductRoutes(c *gin.Engine){
 	product := c.Group("/api/v1/product")
 	{
 		product.POST("/create", controllers.CreatedProduct)
+		product.GET("/",controllers.GetProducts)
 	}
 }
