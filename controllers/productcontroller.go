@@ -108,3 +108,24 @@ func GetSingleProduct(c *gin.Context){
 	}
 	c.JSON(http.StatusFound, gin.H{"message": "Product is Found", "data": product})
 } 
+
+func DeleteSingleProduct(c *gin.Context){
+	id := c.Param("productId")
+    var product models.Product
+
+	productCollection := config.Client.Database("Gin").Collection("product")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+    objectId ,err := primitive.ObjectIDFromHex(id)
+    if err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error":""})
+        return
+	}
+	 err = productCollection.FindOneAndDelete(ctx,bson.M{"_id":objectId}).Decode(&product)
+	 if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Unable to delete the product"})
+		return 
+	 }
+	 c.JSON(http.StatusCreated, gin.H{"message":"Successfully deleted the product","success":true, "data":product})
+}
