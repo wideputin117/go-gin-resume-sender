@@ -41,5 +41,6 @@ func main() {
 	routes.AuthRoutes(router)
 	routes.CategoryRoutes(router)
 	routes.ProductRoutes(router)
+	routes.CompanyRoutes(router)
 	router.Run("localhost:8000")
 }
