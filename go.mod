@@ -3,6 +3,7 @@ module example/go-gin-resume-sender
 go 1.22.6
 
 require (
+	github.com/dslipak/pdf v0.0.2
 	github.com/gin-gonic/gin v1.10.1
 	github.com/golang-jwt/jwt/v5 v5.2.3
 	github.com/joho/godotenv v1.5.1
