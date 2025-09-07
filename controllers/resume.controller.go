@@ -113,7 +113,7 @@ func AnalyzeResume(resumeText string) (*ResumeAnalysis, error) {
 	hfApiKey := os.Getenv("HF_ACCESS_TOKEN")
 	if hfApiKey == "" {
 		// Fallback for your hardcoded key if the env var is not set, but not recommended
-		hfApiKey = "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"
+		hfApiKey = ""
 	}
 
 	classifyReq := map[string]interface{}{
