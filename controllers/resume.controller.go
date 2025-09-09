@@ -127,7 +127,7 @@ func AnalyzeResume(resumeText string) (*ResumeAnalysis, error) {
 		},
 	}
 	classifyRaw := callHF("facebook/bart-large-mnli", classifyReq, hfApiKey)
-    fmt.Println("The Meta response is", string(classifyRaw))
+	fmt.Println("The Meta response is", string(classifyRaw))
 	var classifyResponse []map[string]interface{}
 	roles := []string{}
 	// Safely parse the response
@@ -147,6 +147,7 @@ func AnalyzeResume(resumeText string) (*ResumeAnalysis, error) {
 	}
 
 	// --- Step 2: In-depth analysis (Google Gemini) ---
+ 
 	geminiAnalysis, err := AnalyzeResumeWithGemini(resumeText)
 	if err != nil {
 		return nil, fmt.Errorf("gemini analysis failed: %w", err)
@@ -168,7 +169,7 @@ func AnalyzeResumeWithGemini(resumeText string) (*ResumeAnalysis, error) {
 		return nil, fmt.Errorf("GEMINI_API_KEY environment variable not set")
 	}
 
-    url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + apiKey
+	url := "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + apiKey
 	// The prompt instructs Gemini to return ONLY the JSON object.
 	prompt := fmt.Sprintf(`You are an advanced Applicant Tracking System (ATS). Analyze the following resume and return ONLY a single JSON object.
 
@@ -261,7 +262,7 @@ func callHF(model string, body map[string]interface{}, apiKey string) []byte {
 		return nil
 	}
 	defer resp.Body.Close()
-
+	fmt.Print("the response direclty from the hugging face", resp)
 	respBody, _ := io.ReadAll(resp.Body)
 	return respBody
 }
