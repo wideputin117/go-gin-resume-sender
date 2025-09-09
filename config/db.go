@@ -16,10 +16,10 @@ var Client *mongo.Client
 
 func ConnectToDB() *mongo.Client {
 	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("❌ Unable to load environment variables")
-	}
+	_ = godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("❌ Unable to load environment variables")
+	// }
 
 	// Get the MongoDB URI from .env
 	mongoURL := os.Getenv("MONGODB_URI")
